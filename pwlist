@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# A simple script for a slightly secure password storage
+# file.  Requires gpg and vim.
+# by Dan Feerst (feerstd@gmail.com)
+
+if [ "$1" == "display" ]; then
+    clear
+    gpg -q --yes -d ~/.secret.gpg
+    sleep 5
+    clear
+
+elif [ "$1" == "open" ]; then
+    gpg -q --yes -d ~/.secret.gpg > .secret
+    vim ~/.secret
+
+elif [ "$1" == "close" ]; then
+    gpg -q --yes --symmetric ~/.secret
+    if [[ ~/.secret -ot ~/.secret.gpg && -a ~/.secret.gpg ]]; then
+        rm ~/.secret
+    else
+        echo -e "ERROR: Something bad happened"
+    fi
+else
+    echo -e "ERROR: arguments are \"display\", \"open\", and \"close\"."
+fi
+
+
