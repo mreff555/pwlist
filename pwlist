@@ -4,25 +4,34 @@
 # file.  Requires gpg and vim.
 # by Dan Feerst (feerstd@gmail.com)
 
+homedir="/home/dmf86"
+file="$homedir/.secret"
+exec="/usr/bin/gpg2"
+
 if [ "$1" == "display" ]; then
-    clear
-    gpg -q --yes -d ~/.secret.gpg
+    $exec -q --yes -d $file.gpg
     sleep 5
     clear
+    rm -f
 
 elif [ "$1" == "open" ]; then
-    gpg -q --yes -d ~/.secret.gpg > .secret
-    vim ~/.secret
+    $exec -q --yes -d $file.gpg > $file
+    vim $file
 
 elif [ "$1" == "close" ]; then
-    gpg -q --yes --symmetric ~/.secret
-    if [[ ~/.secret -ot ~/.secret.gpg && -a ~/.secret.gpg ]]; then
-        rm ~/.secret
+    $exec -q --yes --symmetric $file
+    echo RELOADAGENT | gpg-connect-agent
+    if [[ $file -ot $file.gpg && -a $file.gpg ]]; then
+        rm $file
     else
         echo -e "ERROR: Something bad happened"
     fi
+
+elif [ "$1" == "flush" ]; then
+    echo RELOADAGENT | gpg-connect-agent
+
 else
-    echo -e "ERROR: arguments are \"display\", \"open\", and \"close\"."
+    echo -e "ERROR: arguments are \"display\", \"open\", \"flush\", and \"close\"."
 fi
 
 
