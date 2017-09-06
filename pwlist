@@ -4,19 +4,29 @@
 # file.  Requires gpg and vim.
 # by Dan Feerst (feerstd@gmail.com)
 
+# Users home directory
 homedir="/home/dmf86"
+
+# Location for plaintext file. Hashfile will append '.gpg'
 file="$homedir/.secret"
+
+# gpg location
 exec="/usr/bin/gpg2"
 
+# Text editor location
+editor="/usr/bin/vim"
+
+# Display sleep time before clearing screen
+sleepTime=10
 if [ "$1" == "display" ]; then
     $exec -q --yes -d $file.gpg
-    sleep 5
+    sleep $sleepTime
     clear
     rm -f
 
 elif [ "$1" == "open" ]; then
     $exec -q --yes -d $file.gpg > $file
-    vim $file
+    $editor $file
 
 elif [ "$1" == "close" ]; then
     $exec -q --yes --symmetric $file
